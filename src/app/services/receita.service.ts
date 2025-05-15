@@ -6,27 +6,28 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ReceitaService {
-  private apiUrl = 'http://localhost:3000/receitas';
+  private apiUrl = 'http://localhost:3000/receitas'; //url da api
 
   constructor(private http: HttpClient) { }
-
-  cadastrarReceita(receita: any): Observable<any> {
+  
+  //observable é um objeto que representa um fluxo de dados assíncrono
+  cadastrarReceita(receita: any): Observable<any> { //cadastrar uma nova receita
     return this.http.post(this.apiUrl, receita);
   }
 
-  listarReceitas(): Observable<any[]> {
+  listarReceitas(): Observable<any[]> { //listar todas as receitas
     return this.http.get<any[]>(this.apiUrl);
   }
 
-  buscarReceita(id: string): Observable<any> {
+  buscarReceita(id: string): Observable<any> { //buscar receita por id
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 
-  atualizarReceita(id: string, receita: any): Observable<any> {
+  atualizarReceita(id: string, receita: any): Observable<any> { //atualizar uma receita existente
     return this.http.put(`${this.apiUrl}/${id}`, receita);
   }
 
-  deletarReceita(id: string): Observable<any> {
+  deletarReceita(id: string): Observable<any> { //deletar uma receita existente
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 } 
