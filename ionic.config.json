@@ -1,0 +1,7 @@
+{
+  "name": "appCulinaria",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

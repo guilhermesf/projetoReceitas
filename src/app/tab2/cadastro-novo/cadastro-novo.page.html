@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Cadastro de Receita</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form #form="ngForm" (ngSubmit)="cadastrarReceita(form)">
+    <ion-item>
+      <ion-label position="floating">Nome da Receita</ion-label>
+      <ion-input type="text" required name="nome" ngModel></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Ingredientes</ion-label>
+      <ion-input type="text" required name="ingredientes" ngModel></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Modo de Preparo</ion-label>
+      <ion-textarea required name="modoPreparo" ngModel></ion-textarea>
+    </ion-item>
+    <ion-button fill="outline" color="success" type="submit">Cadastrar</ion-button>
+  </form>
+</ion-content>
