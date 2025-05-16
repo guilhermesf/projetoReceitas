@@ -1,0 +1,49 @@
+// Estilos para a página de categorias 
+.categorias-container {
+  padding: 16px;
+}
+
+.categoria-card {
+  margin-bottom: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.categoria-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+}
+
+.categoria-nome {
+  font-size: 1.1em;
+  font-weight: 500;
+  margin: 0;
+}
+
+.categoria-descricao {
+  color: var(--ion-color-medium);
+  margin: 8px 0;
+}
+
+.categoria-acoes {
+  display: flex;
+  gap: 8px;
+}
+
+.nova-categoria {
+  margin-top: 24px;
+  padding: 16px;
+  background: var(--ion-color-light);
+  border-radius: 8px;
+}
+
+.nova-categoria ion-item {
+  --background: transparent;
+  margin-bottom: 8px;
+}
+
+.nova-categoria ion-button {
+  margin-top: 16px;
+} 

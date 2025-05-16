@@ -32,6 +32,14 @@ const routes: Routes = [
         loadChildren: () => import('../tab2/cadastro-novo/cadastro-novo.module').then(m => m.CadastroNovoPageModule)
       },
       {
+        path: 'categorias',
+        loadChildren: () => import('../tab3/categorias/categorias.module').then(m => m.CategoriasPageModule)
+      },
+      {
+        path: 'categorias/editar/:id',
+        loadChildren: () => import('../tab3/categorias/editar-categoria/editar-categoria.module').then(m => m.EditarCategoriaPageModule)
+      },
+      {
         path: '',
         redirectTo: '/tabs/tab1',
         pathMatch: 'full'

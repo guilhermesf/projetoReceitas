@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Categorias</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="categorias-container">
+    <!-- Lista de Categorias -->
+    <ion-list>
+      <ion-item *ngFor="let categoria of categorias" class="categoria-card">
+        <ion-label>
+          <div class="categoria-header">
+            <h2 class="categoria-nome">{{ categoria.nome }}</h2>
+            <div class="categoria-acoes">
+              <ion-button fill="clear" [routerLink]="['/tabs/categorias/editar', categoria.id]">
+                <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+              </ion-button>
+              <ion-button fill="clear" color="danger" (click)="deletarCategoria(categoria.id)">
+                <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+          <p class="categoria-descricao">{{ categoria.descricao }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
+    <!-- Formulário de Nova Categoria -->
+    <div class="nova-categoria">
+      <h2>Nova Categoria</h2>
+      <form [formGroup]="categoriaForm">
+        <ion-item>
+          <ion-label position="stacked">Nome</ion-label>
+          <ion-input formControlName="nome" placeholder="Digite o nome da categoria"></ion-input>
+        </ion-item>
+        <ion-note color="danger" *ngIf="nome?.invalid && (nome?.dirty || nome?.touched)">
+          <span *ngIf="nome?.errors?.['required']">Nome é obrigatório</span>
+          <span *ngIf="nome?.errors?.['minlength']">Nome deve ter no mínimo 3 caracteres</span>
+        </ion-note>
+
+        <ion-item>
+          <ion-label position="stacked">Descrição</ion-label>
+          <ion-textarea formControlName="descricao" placeholder="Digite a descrição da categoria"></ion-textarea>
+        </ion-item>
+        <ion-note color="danger" *ngIf="descricao?.invalid && (descricao?.dirty || descricao?.touched)">
+          <span *ngIf="descricao?.errors?.['required']">Descrição é obrigatória</span>
+        </ion-note>
+
+        <ion-item>
+          <ion-label position="stacked">Ícone</ion-label>
+          <ion-input formControlName="icone" placeholder="Digite o nome do ícone"></ion-input>
+        </ion-item>
+
+        <ion-button expand="block" [disabled]="categoriaForm.invalid" (click)="cadastrarCategoria()">
+          Cadastrar Categoria
+        </ion-button>
+      </form>
+    </div>
+  </div>
+</ion-content> 

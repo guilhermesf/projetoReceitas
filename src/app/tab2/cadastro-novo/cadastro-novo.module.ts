@@ -1,25 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { RouterModule, Routes } from '@angular/router';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CadastroNovoPageRoutingModule } from './cadastro-novo-routing.module';
 import { CadastroNovoPage } from './cadastro-novo.page';
 
-const routes: Routes = [
-  {
-    path: '',
-    component: CadastroNovoPage
-  }
-];
-
 @NgModule({
-  declarations: [CadastroNovoPage],
   imports: [
     CommonModule,
-    IonicModule,
     FormsModule,
-    ReactiveFormsModule,
-    RouterModule.forChild(routes)
+    IonicModule,
+    CadastroNovoPageRoutingModule,
+    CadastroNovoPage
   ]
 })
 export class CadastroNovoPageModule {}

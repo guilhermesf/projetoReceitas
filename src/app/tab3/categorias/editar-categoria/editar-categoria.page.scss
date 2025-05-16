@@ -1,3 +1,4 @@
+// Estilos para a página de edição de categorias 
 .container {
   padding: 16px;
 }
@@ -17,7 +18,7 @@ form {
     font-weight: 500;
   }
 
-  ion-input, ion-textarea, ion-select {
+  ion-input, ion-textarea {
     --padding-start: 8px;
     --padding-end: 8px;
     --padding-top: 8px;
@@ -27,4 +28,4 @@ form {
   ion-button {
     margin-top: 24px;
   }
-}
+} 

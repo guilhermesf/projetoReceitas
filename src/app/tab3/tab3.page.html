@@ -1,17 +1,33 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Buscar Receitas
+      Geral
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+  <div class="container">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Buscar Receitas</ion-card-title>
+        <ion-card-subtitle>Encontre receitas por nome, ingrediente ou categoria</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-searchbar placeholder="Buscar receitas..."></ion-searchbar>
+      </ion-card-content>
+    </ion-card>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Gerenciar Categorias</ion-card-title>
+        <ion-card-subtitle>Organize suas receitas por categorias</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-button expand="block" routerLink="/tabs/categorias">
+          <ion-icon name="list-outline" slot="start"></ion-icon>
+          Gerenciar Categorias
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>

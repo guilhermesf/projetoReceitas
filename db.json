@@ -1,3 +1,15 @@
 {
-  "receitas": []
+  "receitas": [
+    {
+      "id": "09e8",
+      "nome": "teste",
+      "categoriaId": "",
+      "ingredientes": "teste",
+      "modoPreparo": "teste",
+      "tempoPreparo": 5,
+      "porcoes": 4,
+      "dificuldade": "medio"
+    }
+  ],
+  "categorias": []
 }
