@@ -4,7 +4,7 @@ import { Favorito } from '../models/favorito.model';
 import { ReceitaService } from '../services/receita.service';
 import { Receita } from '../models/receita.model';
 import { CommonModule } from '@angular/common';
-import { IonicModule, ModalController, ViewWillEnter } from '@ionic/angular';
+import { IonicModule, ModalController, ViewWillEnter, AlertController } from '@ionic/angular';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { ModalDetalheReceitaComponent } from '../modals/modal-detalhe-receita/modal-detalhe-receita.component';
@@ -27,7 +27,8 @@ export class Tab4Page implements OnInit, ViewWillEnter {
     private favoritoService: FavoritoService,
     private receitaService: ReceitaService,
     private formBuilder: FormBuilder,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private alertController: AlertController
   ) {
     this.filtroForm = this.formBuilder.group({
       colecao: ['']
@@ -116,22 +117,50 @@ export class Tab4Page implements OnInit, ViewWillEnter {
     });
   }
 
-  removerFavorito(id: number | undefined) {
-    if (id === undefined) {
+  async removerFavorito(favoritoId: string | undefined) {
+    if (!favoritoId) {
       console.error('ID do favorito não fornecido para remoção.');
-      alert('Não foi possível remover o favorito: ID não encontrado.');
+      this.presentAlert('Erro', 'Não foi possível remover o favorito: ID não encontrado.');
       return;
     }
 
-    this.favoritoService.removerFavorito(id).subscribe({
-      next: () => {
-        this.carregarFavoritos();
-      },
-      error: (erro) => {
-        console.error('Erro ao remover favorito:', erro);
-        alert('Erro ao remover favorito. Tente novamente.');
-      }
+    const confirmAlert = await this.alertController.create({
+      header: 'Confirmar exclusão',
+      message: 'Tem certeza que deseja remover esta receita dos favoritos?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary'
+        },
+        {
+          text: 'Remover',
+          handler: () => {
+            this.favoritoService.removerFavorito(favoritoId).subscribe({
+              next: () => {
+                this.carregarFavoritos();
+                this.presentAlert('Sucesso', 'Favorito removido com sucesso!');
+              },
+              error: (erro) => {
+                console.error('Erro ao remover favorito:', erro);
+                this.presentAlert('Erro', 'Erro ao remover favorito. Tente novamente.');
+              }
+            });
+          }
+        }
+      ]
     });
+
+    await confirmAlert.present();
+  }
+
+  async presentAlert(header: string, message: string) {
+    const alert = await this.alertController.create({
+      header: header,
+      message: message,
+      buttons: ['OK']
+    });
+    await alert.present();
   }
 
   filtrarPorColecao(colecao: string) {
@@ -151,22 +180,17 @@ export class Tab4Page implements OnInit, ViewWillEnter {
   }
 
   getReceitaNome(receitaId: string | undefined): string {
-    console.log('Chamado getReceitaNome para receitaId:', receitaId);
-    if (receitaId === undefined) {
-      return 'Receita desconhecida';
-    }
     const receita = this.receitasFavoritas.find(r => r.id === receitaId);
-    console.log('Resultado de busca para nome:', receita);
     return receita ? receita.nome : 'Receita não encontrada';
   }
 
   getReceitaIngredientes(receitaId: string | undefined): string {
-    console.log('Chamado getReceitaIngredientes para receitaId:', receitaId);
-    if (receitaId === undefined) {
-      return 'Ingredientes desconhecidos';
-    }
     const receita = this.receitasFavoritas.find(r => r.id === receitaId);
-    console.log('Resultado de busca para ingredientes:', receita);
-    return receita ? receita.ingredientes : 'Ingredientes não encontrados';
+    return receita ? receita.ingredientes : 'Ingredientes não disponíveis';
+  }
+
+  getReceitaImagem(receitaId: string | undefined): string | undefined {
+    const receita = this.receitasFavoritas.find(r => r.id === receitaId);
+    return receita ? receita.imagem : undefined;
   }
 }

@@ -1,14 +1,13 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, ToastController } from '@ionic/angular';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ReceitaService } from '../services/receita.service';
 import { FavoritoService } from '../services/favorito.service';
-import { CategoriaService } from '../services/categoria.service';
 import { Receita } from '../models/receita.model';
 import { Favorito } from '../models/favorito.model';
 import { Categoria } from '../models/categoria.model';
-import { Subscription } from 'rxjs';
+import { CategoriaService } from '../services/categoria.service';
 
 @Component({
   selector: 'app-tab1',
@@ -17,175 +16,180 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [CommonModule, IonicModule, ReactiveFormsModule]
 })
-export class Tab1Page implements OnInit, OnDestroy {
-  filtroForm: FormGroup;
+export class Tab1Page implements OnInit {
   receitas: Receita[] = [];
-  receitasFiltradas: Receita[] = [];
   favoritos: Favorito[] = [];
-  categorias: Categoria[] = [];
-  private subscription: Subscription = new Subscription();
-  private usuarioId = 1; // TODO: Implementar autenticação e pegar o ID do usuário logado
+  filtroForm: FormGroup;
+  receitasCarregadas: Receita[] = []; // Lista completa de receitas carregadas
+  categorias: Categoria[] = []; // Adicionar de volta a lista de categorias
 
   constructor(
-    private fb: FormBuilder,
     private receitaService: ReceitaService,
     private favoritoService: FavoritoService,
-    private categoriaService: CategoriaService,
-    private toastController: ToastController
+    private formBuilder: FormBuilder,
+    private toastController: ToastController,
+    private categoriaService: CategoriaService
   ) {
-    this.filtroForm = this.fb.group({
+    this.filtroForm = this.formBuilder.group({
+      termoBusca: [''],
       categoria: [''],
       dificuldade: [''],
-      tempoMaximo: ['']
+      tempoMaximo: [null]
     });
   }
 
   ngOnInit() {
-  }
-
-  ionViewWillEnter() {
     this.carregarReceitas();
     this.carregarFavoritos();
     this.carregarCategorias();
     this.configurarFiltros();
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
+  ionViewWillEnter() {
+    this.carregarReceitas();
+    this.carregarFavoritos();
+    this.configurarFiltros();
   }
 
-  private async mostrarToast(mensagem: string, cor: string = 'success') {
-    const toast = await this.toastController.create({
-      message: mensagem,
-      duration: 2000,
-      color: cor,
-      position: 'bottom'
+  carregarReceitas() {
+    this.receitaService.listarReceitas().subscribe({
+      next: (data) => {
+        this.receitasCarregadas = data; // Armazenar a lista completa
+        this.aplicarFiltros(); // Aplicar filtros iniciais
+      },
+      error: (error) => {
+        console.error('Erro ao carregar receitas:', error);
+      }
     });
-    await toast.present();
   }
 
-  private carregarReceitas() {
-    this.subscription.add(
-      this.receitaService.listarReceitas().subscribe({
-        next: (receitas: Receita[]) => {
-          this.receitas = receitas;
-          this.aplicarFiltros();
-        },
-        error: (erro: Error) => {
-          console.error('Erro ao carregar receitas:', erro);
-          this.mostrarToast('Erro ao carregar receitas', 'danger');
-        }
-      })
-    );
+  carregarFavoritos() {
+    // Substituir 1 pelo ID do usuário logado
+    const usuarioId = 1;
+    this.favoritoService.getFavoritos(usuarioId).subscribe({
+      next: (data) => {
+        this.favoritos = data;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar favoritos:', error);
+      }
+    });
   }
 
-  private carregarFavoritos() {
-    this.subscription.add(
-      this.favoritoService.getFavoritos(this.usuarioId).subscribe({
-        next: (favoritos) => {
-          this.favoritos = favoritos;
-        },
-        error: (erro: Error) => {
-          console.error('Erro ao carregar favoritos:', erro);
-          this.mostrarToast('Erro ao carregar favoritos', 'danger');
-        }
-      })
-    );
+  carregarCategorias() {
+    this.categoriaService.listarCategorias().subscribe({
+      next: (data: Categoria[]) => {
+        this.categorias = data;
+      },
+      error: (error: any) => {
+        console.error('Erro ao carregar categorias:', error);
+      }
+    });
   }
 
-  private carregarCategorias() {
-    this.subscription.add(
-      this.categoriaService.listarCategorias().subscribe({
-        next: (categorias) => {
-          this.categorias = categorias;
-        },
-        error: (erro: Error) => {
-          console.error('Erro ao carregar categorias:', erro);
-          this.mostrarToast('Erro ao carregar categorias', 'danger');
-        }
-      })
-    );
+  configurarFiltros() {
+    this.filtroForm.valueChanges.subscribe(() => {
+      this.aplicarFiltros();
+    });
+  }
+
+  aplicarFiltros() {
+    const filtro = this.filtroForm.value;
+    let receitasFiltradas = this.receitasCarregadas;
+
+    if (filtro.termoBusca) {
+      const termo = filtro.termoBusca.toLowerCase();
+      receitasFiltradas = receitasFiltradas.filter(receita =>
+        receita.nome.toLowerCase().includes(termo) ||
+        receita.ingredientes.toLowerCase().includes(termo) ||
+        receita.modoPreparo.toLowerCase().includes(termo)
+      );
+    }
+
+    if (filtro.categoria) {
+      receitasFiltradas = receitasFiltradas.filter(receita => receita.categoriaId === filtro.categoria);
+    }
+
+    if (filtro.dificuldade) {
+      receitasFiltradas = receitasFiltradas.filter(receita => receita.dificuldade === filtro.dificuldade);
+    }
+
+    if (filtro.tempoMaximo !== null && filtro.tempoMaximo !== '') {
+      const tempoMax = Number(filtro.tempoMaximo);
+      if (!isNaN(tempoMax)) {
+        receitasFiltradas = receitasFiltradas.filter(receita => receita.tempoPreparo !== undefined && receita.tempoPreparo <= tempoMax);
+      }
+    }
+
+    this.receitas = receitasFiltradas;
   }
 
   isFavorito(receitaId: string | undefined): boolean {
     if (!receitaId) return false;
-    return this.favoritos.some(f => f.receitaId === receitaId);
+    // Substituir 1 pelo ID do usuário logado
+    const usuarioId = 1;
+    return this.favoritos.some(favorito => favorito.receitaId === receitaId && favorito.usuarioId === usuarioId);
   }
 
   toggleFavorito(receita: Receita) {
+    const usuarioId = 1; // Substituir pelo ID do usuário logado
     if (!receita.id) {
-      console.error('ID da receita não encontrado');
-      this.mostrarToast('Erro: ID da receita não encontrado', 'danger');
+      console.error('ID da receita não encontrado para favoritar/desfavoritar');
+      this.presentToast('Erro ao favoritar/desfavoritar receita.');
       return;
     }
-    
-    const receitaId = receita.id;
-    
-    if (this.isFavorito(receita.id)) {
-      const favorito = this.favoritos.find(f => f.receitaId === receitaId);
-      if (favorito && favorito.id) {
-        this.subscription.add(
-          this.favoritoService.removerFavorito(favorito.id).subscribe({
-            next: () => {
-              this.favoritos = this.favoritos.filter(f => f.id !== favorito.id);
-              this.mostrarToast('Receita removida dos favoritos');
-            },
-            error: (erro: Error) => {
-              console.error('Erro ao remover favorito:', erro);
-              this.mostrarToast('Erro ao remover dos favoritos', 'danger');
-            }
-          })
-        );
+
+    const favoritoExistente = this.favoritos.find(favorito => favorito.receitaId === receita.id && favorito.usuarioId === usuarioId);
+
+    if (favoritoExistente) {
+      // Remover favorito
+      if (favoritoExistente.id) {
+        this.favoritoService.removerFavorito(favoritoExistente.id).subscribe({
+          next: () => {
+            this.carregarFavoritos();
+            this.presentToast('Receita removida dos favoritos!');
+          },
+          error: (error) => {
+            console.error('Erro ao remover favorito:', error);
+            this.presentToast('Erro ao remover favorito.');
+          }
+        });
+      } else {
+        console.error('ID do favorito não encontrado para remoção');
+        this.presentToast('Erro ao remover favorito: ID não encontrado.');
       }
     } else {
+      // Adicionar favorito
       const novoFavorito: Omit<Favorito, 'id'> = {
-        usuarioId: this.usuarioId,
-        receitaId: receitaId,
+        usuarioId: usuarioId,
+        receitaId: receita.id,
         dataAdicao: new Date()
       };
-      this.subscription.add(
-        this.favoritoService.adicionarFavorito(novoFavorito).subscribe({
-          next: (favorito) => {
-            this.favoritos.push(favorito);
-            this.mostrarToast('Receita adicionada aos favoritos');
-          },
-          error: (erro: Error) => {
-            console.error('Erro ao adicionar favorito:', erro);
-            this.mostrarToast('Erro ao adicionar aos favoritos', 'danger');
-          }
-        })
-      );
+      this.favoritoService.adicionarFavorito(novoFavorito).subscribe({
+        next: () => {
+          this.carregarFavoritos();
+          this.presentToast('Receita adicionada aos favoritos!');
+        },
+        error: (error) => {
+          console.error('Erro ao adicionar favorito:', error);
+          this.presentToast('Erro ao adicionar favorito.');
+        }
+      });
     }
   }
 
-  private configurarFiltros() {
-    this.subscription.add(
-      this.filtroForm.valueChanges.subscribe(() => {
-        this.aplicarFiltros();
-      })
-    );
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000,
+      position: 'bottom'
+    });
+    toast.present();
   }
 
-  private aplicarFiltros() {
-    const filtros = this.filtroForm.value;
-    this.receitasFiltradas = [...this.receitas];
-
-    if (filtros.categoria) {
-      this.receitasFiltradas = this.receitasFiltradas.filter(
-        receita => receita.categoriaId === filtros.categoria
-      );
-    }
-
-    if (filtros.dificuldade) {
-      this.receitasFiltradas = this.receitasFiltradas.filter(
-        receita => receita.dificuldade === filtros.dificuldade
-      );
-    }
-
-    if (filtros.tempoMaximo) {
-      this.receitasFiltradas = this.receitasFiltradas.filter(
-        receita => receita.tempoPreparo && receita.tempoPreparo <= filtros.tempoMaximo
-      );
-    }
-  }
+  // Getters para facilitar o acesso aos campos no template (se necessário para filtro)
+  get termoBusca() { return this.filtroForm.get('termoBusca'); }
+  get categoria() { return this.filtroForm.get('categoria'); }
+  get dificuldade() { return this.filtroForm.get('dificuldade'); }
+  get tempoMaximo() { return this.filtroForm.get('tempoMaximo'); }
 }

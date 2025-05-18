@@ -1,0 +1,69 @@
+.receita-detalhes {
+  padding: 16px;
+
+  h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: var(--ion-color-dark);
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 20px 0 10px;
+    color: var(--ion-color-dark);
+  }
+
+  .info-receita {
+    margin-bottom: 20px;
+
+    ion-item {
+      --background: transparent;
+      --padding-start: 0;
+      --padding-end: 0;
+      --min-height: 40px;
+
+      ion-icon {
+        display: none;
+      }
+
+      ion-label {
+        color: var(--ion-color-dark);
+        font-weight: 600;
+        margin-right: 8px;
+      }
+
+      span {
+        color: var(--ion-color-medium);
+        font-weight: normal;
+      }
+    }
+  }
+
+  .ingredientes {
+    ion-list {
+      background: transparent;
+      padding: 0;
+
+      ion-item {
+        --background: transparent;
+        --padding-start: 16px;
+        --padding-end: 16px;
+        --min-height: 40px;
+
+        ion-label p {
+          color: var(--ion-color-dark);
+        }
+      }
+    }
+  }
+
+  .modo-preparo {
+    p {
+      color: var(--ion-color-dark);
+      line-height: 1.5;
+      white-space: pre-line;
+    }
+  }
+} 

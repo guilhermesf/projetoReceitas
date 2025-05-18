@@ -31,7 +31,8 @@ export class CadastroNovoPage implements OnInit {
       modoPreparo: ['', Validators.required],
       tempoPreparo: ['', [Validators.required, Validators.min(1)]],
       porcoes: ['', [Validators.required, Validators.min(1)]],
-      dificuldade: ['', Validators.required]
+      dificuldade: ['', Validators.required],
+      imagem: ['']
     });
   }
 
@@ -63,6 +64,22 @@ export class CadastroNovoPage implements OnInit {
           alert('Erro ao cadastrar receita. Tente novamente.');
         }
       });
+    }
+  }
+
+  onFileSelected(event: Event) {
+    const element = event.target as HTMLInputElement;
+    const file = element.files?.[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        // O resultado é a string Base64
+        this.receitaForm.patchValue({
+          imagem: reader.result as string
+        });
+      };
+      reader.readAsDataURL(file);
     }
   }
 

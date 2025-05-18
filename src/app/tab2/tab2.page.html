@@ -30,12 +30,14 @@
 
           <ion-card-content>
             <ion-item>
+              <ion-icon name="list-outline" slot="start"></ion-icon>
               <ion-label>
                 <h3>Ingredientes:</h3>
                 <p>{{receita.ingredientes}}</p>
               </ion-label>
             </ion-item>
             <ion-item>
+              <ion-icon name="create-outline" slot="start"></ion-icon>
               <ion-label>
                 <h3>Modo de Preparo:</h3>
                 <p>{{receita.modoPreparo}}</p>
@@ -60,7 +62,7 @@
           <ion-button fill="clear" (click)="editarReceita(receita)">
             <ion-icon name="create-outline" slot="icon-only"></ion-icon>
           </ion-button>
-          <ion-button fill="clear" color="danger" (click)="deletarReceita(receita.id)">
+          <ion-button fill="clear" color="danger" (click)="receita.id && deletarReceita(receita.id)">
             <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
           </ion-button>
         </ion-card>
@@ -161,6 +163,13 @@
           <ion-note color="danger" *ngIf="dificuldade?.invalid && (dificuldade?.dirty || dificuldade?.touched)">
             <span *ngIf="dificuldade?.errors?.['required']">Dificuldade é obrigatória</span>
           </ion-note>
+        </div>
+
+        <div class="form-group">
+          <ion-label position="stacked">Imagem da Receita (opcional)</ion-label>
+          <ion-item>
+            <input type="file" (change)="onFileSelected($event)" accept="image/*">
+          </ion-item>
         </div>
 
         <ion-button expand="block" type="submit" [disabled]="receitaForm.invalid">

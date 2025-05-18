@@ -1,5 +1,5 @@
 export interface Favorito {
-    id: number;
+    id: string;
     usuarioId: number;
     receitaId: string;
     dataAdicao: Date;

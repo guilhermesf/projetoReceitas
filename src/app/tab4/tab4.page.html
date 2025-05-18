@@ -19,6 +19,9 @@
       <h2>Receitas Favoritas</h2>
       <ion-list>
         <ion-item *ngFor="let favorito of favoritos; let i = index">
+          <ion-thumbnail slot="start" *ngIf="getReceitaImagem(favorito.receitaId)">
+            <img [src]="getReceitaImagem(favorito.receitaId)" [alt]="getReceitaNome(favorito.receitaId)">
+          </ion-thumbnail>
           <ion-label>
             
             <h3>{{ getReceitaNome(favorito.receitaId) }}</h3>

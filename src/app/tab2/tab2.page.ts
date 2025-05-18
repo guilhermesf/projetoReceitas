@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab2',
@@ -24,7 +25,8 @@ export class Tab2Page implements OnInit {
   constructor(
     private receitaService: ReceitaService,
     private categoriaService: CategoriaService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private alertController: AlertController
   ) {
     this.receitaForm = this.formBuilder.group({
       nome: ['', [Validators.required, Validators.minLength(3)]],
@@ -33,7 +35,8 @@ export class Tab2Page implements OnInit {
       modoPreparo: ['', Validators.required],
       tempoPreparo: ['', [Validators.required, Validators.min(1)]],
       porcoes: ['', [Validators.required, Validators.min(1)]],
-      dificuldade: ['', Validators.required]
+      dificuldade: ['', Validators.required],
+      imagem: ['']
     });
   }
 
@@ -97,7 +100,8 @@ export class Tab2Page implements OnInit {
       modoPreparo: receita.modoPreparo,
       tempoPreparo: receita.tempoPreparo,
       porcoes: receita.porcoes,
-      dificuldade: receita.dificuldade
+      dificuldade: receita.dificuldade,
+      imagem: receita.imagem
     });
   }
 
@@ -118,23 +122,65 @@ export class Tab2Page implements OnInit {
     }
   }
 
-  deletarReceita(id?: string) {
-    if (!id) {
-      console.error('ID da receita não encontrado');
+  async deletarReceita(id: string) {
+    if (!id || typeof id !== 'string') {
+      console.error('ID da receita inválido');
       return;
     }
 
-    if (confirm('Tem certeza que deseja excluir esta receita?')) {
-      this.receitaService.deletarReceita(id).subscribe({
-        next: () => {
-          this.carregarReceitas();
-          alert('Receita excluída com sucesso!');
+    const alert = await this.alertController.create({
+      header: 'Confirmar Exclusão',
+      message: 'Tem certeza que deseja excluir esta receita?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
         },
-        error: (error) => {
-          console.error('Erro ao excluir receita:', error);
-          alert('Erro ao excluir receita. Tente novamente.');
-        }
-      });
+        {
+          text: 'Excluir',
+          handler: () => {
+            this.receitaService.deletarReceita(id).subscribe({
+              next: () => {
+                this.carregarReceitas();
+                this.presentAlert('Sucesso', 'Receita excluída com sucesso!');
+              },
+              error: (error) => {
+                console.error('Erro ao excluir receita:', error);
+                this.presentAlert('Erro', 'Erro ao excluir receita. Tente novamente.');
+              }
+            });
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
+  async presentAlert(header: string, message: string) {
+    const alert = await this.alertController.create({
+      header: header,
+      message: message,
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
+  onFileSelected(event: Event) {
+    const element = event.target as HTMLInputElement;
+    const file = element.files?.[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        // O resultado é a string Base64
+        this.receitaForm.patchValue({
+          imagem: reader.result as string
+        });
+      };
+      reader.readAsDataURL(file);
     }
   }
 

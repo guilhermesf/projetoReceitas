@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Editar Categoria</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="fecharModal()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="categoriaForm" (ngSubmit)="atualizarCategoria()">
+    <ion-item>
+      <ion-label position="stacked">Nome</ion-label>
+      <ion-input formControlName="nome" placeholder="Digite o nome da categoria"></ion-input>
+    </ion-item>
+    <ion-note color="danger" *ngIf="nome?.invalid && (nome?.dirty || nome?.touched)">
+      <span *ngIf="nome?.errors?.['required']">Nome é obrigatório</span>
+      <span *ngIf="nome?.errors?.['minlength']">Nome deve ter no mínimo 3 caracteres</span>
+    </ion-note>
+
+    <ion-item>
+      <ion-label position="stacked">Descrição</ion-label>
+      <ion-textarea formControlName="descricao" placeholder="Digite a descrição da categoria" rows="3"></ion-textarea>
+    </ion-item>
+    <ion-note color="danger" *ngIf="descricao?.invalid && (descricao?.dirty || descricao?.touched)">
+      <span *ngIf="descricao?.errors?.['required']">Descrição é obrigatória</span>
+    </ion-note>
+
+    <ion-item>
+      <ion-label position="stacked">Ícone</ion-label>
+      <ion-input formControlName="icone" placeholder="Digite o nome do ícone"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Cor</ion-label>
+      <ion-input formControlName="cor" type="color"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Status</ion-label>
+      <ion-select formControlName="status" placeholder="Selecione o status">
+        <ion-select-option value="ativo">Ativo</ion-select-option>
+        <ion-select-option value="inativo">Inativo</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-note color="danger" *ngIf="status?.invalid && (status?.dirty || status?.touched)">
+      <span *ngIf="status?.errors?.['required']">Status é obrigatório</span>
+    </ion-note>
+
+    <ion-button expand="block" type="submit" [disabled]="categoriaForm.invalid">
+      Atualizar Categoria
+    </ion-button>
+  </form>
+</ion-content> 

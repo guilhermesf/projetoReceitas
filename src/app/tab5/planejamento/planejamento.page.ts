@@ -1,37 +1,39 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, AlertController } from '@ionic/angular';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { PlanejamentoService } from '../../services/planejamento.service';
 import { ReceitaService } from '../../services/receita.service';
 import { Planejamento, TIPOS_REFEICAO, TipoRefeicao } from '../../models/planejamento.model';
 import { Receita } from '../../models/receita.model';
 import { Subscription } from 'rxjs';
-import { MaskitoDirective } from '@maskito/angular';
-import { maskitoDateOptionsGenerator } from '@maskito/kit';
-import { MaskitoOptions } from '@maskito/core';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Router } from '@angular/router';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 @Component({
   selector: 'app-planejamento',
   templateUrl: './planejamento.page.html',
   styleUrls: ['./planejamento.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, ReactiveFormsModule, MaskitoDirective],
+  imports: [CommonModule, IonicModule, ReactiveFormsModule],
   schemas: [NO_ERRORS_SCHEMA]
 })
 export class PlanejamentoPage implements OnInit, OnDestroy {
   planejamentoForm: FormGroup;
   planejamentos: Planejamento[] = [];
   receitas: Receita[] = [];
-  readonly dateMask: MaskitoOptions = maskitoDateOptionsGenerator({ mode: 'dd/mm/yyyy' });
 
   tiposRefeicaoParaTemplate = ['cafe', 'almoco', 'jantar', 'lanche'];
   tiposRefeicao = TIPOS_REFEICAO;
 
   getNomeTipoRefeicao(tipo: string): string {
-    return this.tiposRefeicao[tipo as keyof typeof TIPOS_REFEICAO] || tipo;
+    const tipos: Record<string, string> = {
+      'cafe_manha': 'Café da Manhã',
+      'almoco': 'Almoço',
+      'jantar': 'Jantar',
+      'lanche': 'Lanche'
+    };
+    return tipos[tipo] || tipo;
   }
 
   dataInicio: Date = new Date();
@@ -47,7 +49,16 @@ export class PlanejamentoPage implements OnInit, OnDestroy {
     private alertController: AlertController
   ) {
     this.planejamentoForm = this.fb.group({
-      data: ['', [Validators.required]],
+      data: ['', [
+        Validators.required,
+        (control: AbstractControl): ValidationErrors | null => {
+          const data = control.value;
+          if (data && !this.validarData(data)) {
+            return { dataInvalida: true };
+          }
+          return null;
+        }
+      ]],
       refeicao: ['', [Validators.required]],
       receitaId: ['', [Validators.required]],
       observacoes: ['', [Validators.maxLength(200)]]
@@ -119,9 +130,25 @@ export class PlanejamentoPage implements OnInit, OnDestroy {
     );
   }
 
+  formatarDataParaExibicao(data: string | Date): string {
+    if (data instanceof Date) {
+      const dia = String(data.getDate()).padStart(2, '0');
+      const mes = String(data.getMonth() + 1).padStart(2, '0');
+      const ano = data.getFullYear();
+      return `${dia}/${mes}/${ano}`;
+    }
+    const [ano, mes, dia] = data.split('-');
+    return `${dia}/${mes}/${ano}`;
+  }
+
+  private formatarDataParaAPI(dataString: string): string {
+    const [dia, mes, ano] = dataString.split('/');
+    return `${ano}-${mes}-${dia}`;
+  }
+
   editarPlanejamento(planejamento: Planejamento) {
     this.planejamentoEditando = planejamento;
-    const dataFormatada = planejamento.data ? new Date(planejamento.data).toLocaleDateString('pt-BR') : '';
+    const dataFormatada = planejamento.data ? this.formatarDataParaExibicao(planejamento.data) : '';
     this.planejamentoForm.patchValue({
       data: dataFormatada,
       refeicao: planejamento.refeicao,
@@ -133,13 +160,13 @@ export class PlanejamentoPage implements OnInit, OnDestroy {
   async atualizarPlanejamento() {
     if (this.planejamentoForm.valid && this.planejamentoEditando?.id) {
       const dataFormulario = this.planejamentoForm.value.data;
-      const dataObj = dataFormulario ? new Date(dataFormulario.split('/').reverse().join('-')) : undefined;
+      const dataFormatada = this.formatarDataParaAPI(dataFormulario);
 
       const planejamentoAtualizado: Planejamento = {
         ...this.planejamentoForm.value,
         id: this.planejamentoEditando.id,
         usuarioId: '1',
-        data: dataObj ? dataObj.toISOString() : this.planejamentoEditando.data
+        data: dataFormatada
       };
 
       if (planejamentoAtualizado.id) {
@@ -157,9 +184,6 @@ export class PlanejamentoPage implements OnInit, OnDestroy {
             }
           })
         );
-      } else {
-        console.error('ID do planejamento não encontrado para atualização.');
-        this.presentAlert('Erro', 'Não foi possível atualizar o planejamento: ID não encontrado.');
       }
     }
   }
@@ -174,9 +198,13 @@ export class PlanejamentoPage implements OnInit, OnDestroy {
       this.atualizarPlanejamento();
     } else {
       if (this.planejamentoForm.valid) {
+        const dataFormulario = this.planejamentoForm.value.data;
+        const dataFormatada = this.formatarDataParaAPI(dataFormulario);
+        
         const planejamento: Planejamento = {
           ...this.planejamentoForm.value,
-          usuarioId: '1'
+          usuarioId: '1',
+          data: dataFormatada
         };
   
         this.subscription.add(
@@ -261,5 +289,43 @@ export class PlanejamentoPage implements OnInit, OnDestroy {
     });
 
     await alert.present();
+  }
+
+  private validarData(dataString: string): boolean {
+    const [dia, mes, ano] = dataString.split('/').map(Number);
+    
+    // Verifica se os valores são números válidos
+    if (isNaN(dia) || isNaN(mes) || isNaN(ano)) return false;
+    
+    // Verifica limites básicos
+    if (dia < 1 || dia > 31) return false;
+    if (mes < 1 || mes > 12) return false;
+    if (ano < 1900 || ano > 2100) return false;
+    
+    // Verifica meses com 30 dias
+    if ([4, 6, 9, 11].includes(mes) && dia > 30) return false;
+    
+    // Verifica fevereiro
+    if (mes === 2) {
+      const isBissexto = (ano % 4 === 0 && ano % 100 !== 0) || (ano % 400 === 0);
+      if (isBissexto && dia > 29) return false;
+      if (!isBissexto && dia > 28) return false;
+    }
+    
+    return true;
+  }
+
+  formatarData(event: any) {
+    let value = event.target.value.replace(/\D/g, '');
+    if (value.length > 0) {
+      if (value.length <= 2) {
+        value = value;
+      } else if (value.length <= 4) {
+        value = value.substring(0, 2) + '/' + value.substring(2);
+      } else {
+        value = value.substring(0, 2) + '/' + value.substring(2, 4) + '/' + value.substring(4, 8);
+      }
+    }
+    event.target.value = value;
   }
 } 

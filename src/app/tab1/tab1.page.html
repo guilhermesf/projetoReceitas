@@ -55,7 +55,7 @@
     <div class="recipes-list">
       <h2>Receitas Disponíveis</h2>
       <ion-list>
-        <ion-item *ngFor="let receita of receitasFiltradas">
+        <ion-item *ngFor="let receita of receitas" >
           <ion-thumbnail slot="start" *ngIf="receita.imagem">
             <img [src]="receita.imagem" [alt]="receita.nome">
           </ion-thumbnail>
@@ -75,7 +75,7 @@
       </ion-list>
 
       <!-- Mensagem quando não houver receitas -->
-      <ion-text *ngIf="receitasFiltradas.length === 0" class="ion-text-center ion-padding">
+      <ion-text *ngIf="receitas.length === 0" class="ion-text-center ion-padding">
         <p>Nenhuma receita encontrada.</p>
       </ion-text>
     </div>

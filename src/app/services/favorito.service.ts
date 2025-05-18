@@ -22,12 +22,12 @@ export class FavoritoService {
   }
 
   // Remover uma receita dos favoritos
-  removerFavorito(id: number): Observable<void> {
+  removerFavorito(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
   // Atualizar informações do favorito (como mudar de coleção)
-  atualizarFavorito(id: number, favorito: Partial<Favorito>): Observable<Favorito> {
+  atualizarFavorito(id: string, favorito: Partial<Favorito>): Observable<Favorito> {
     return this.http.patch<Favorito>(`${this.apiUrl}/${id}`, favorito);
   }
 

@@ -36,12 +36,15 @@
           <ion-item>
             <ion-input
               formControlName="data"
-              placeholder="DD/MM/YYYY"
-              [maskito]="dateMask"
+              placeholder="dd/MM/yyyy"
+              type="text"
+              maxlength="10"
+              (ionInput)="formatarData($event)"
             ></ion-input>
           </ion-item>
-          <ion-note color="danger" *ngIf="data?.invalid && (data?.dirty || data?.touched)">
+          <ion-note color="danger" *ngIf="data?.errors && (data?.dirty || data?.touched)">
             <span *ngIf="data?.errors?.['required']">Data é obrigatória</span>
+            <span *ngIf="data?.errors?.['dataInvalida']">Data inválida</span>
           </ion-note>
         </div>
 

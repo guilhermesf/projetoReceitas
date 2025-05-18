@@ -74,6 +74,13 @@
         <span *ngIf="dificuldade?.errors?.['required']">Dificuldade é obrigatória</span>
       </ion-note>
 
+      <div class="form-group">
+        <ion-label position="stacked">Imagem da Receita (opcional)</ion-label>
+        <ion-item>
+          <input type="file" (change)="onFileSelected($event)" accept="image/*">
+        </ion-item>
+      </div>
+
       <ion-button expand="block" type="submit" [disabled]="receitaForm.invalid">
         Cadastrar Receita
       </ion-button>

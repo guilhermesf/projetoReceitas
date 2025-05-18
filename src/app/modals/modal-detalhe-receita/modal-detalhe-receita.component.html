@@ -47,20 +47,32 @@
       </ion-card-content>
     </ion-card>
 
-    <ion-item *ngIf="receita.tempoPreparo">
-      <ion-label>Tempo de Preparo:</ion-label>
-      <ion-text slot="end">{{ receita.tempoPreparo }} minutos</ion-text>
-    </ion-item>
+    <ion-card *ngIf="receita.tempoPreparo">
+      <ion-card-header>
+        <ion-card-title>Tempo de Preparo</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>{{ receita.tempoPreparo }} minutos</p>
+      </ion-card-content>
+    </ion-card>
 
-    <ion-item *ngIf="receita.porcoes">
-      <ion-label>Rendimento:</ion-label>
-      <ion-text slot="end">{{ receita.porcoes }} porções</ion-text>
-    </ion-item>
+    <ion-card *ngIf="receita.porcoes">
+      <ion-card-header>
+        <ion-card-title>Rendimento</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>{{ receita.porcoes }} porções</p>
+      </ion-card-content>
+    </ion-card>
 
-     <ion-item *ngIf="receita.dificuldade">
-      <ion-label>Dificuldade:</ion-label>
-      <ion-text slot="end">{{ receita.dificuldade }}</ion-text>
-    </ion-item>
+     <ion-card *ngIf="receita.dificuldade">
+      <ion-card-header>
+        <ion-card-title>Dificuldade</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>{{ receita.dificuldade }}</p>
+      </ion-card-content>
+    </ion-card>
 
   </div>
 
