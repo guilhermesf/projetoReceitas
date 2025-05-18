@@ -225,20 +225,23 @@ export class PlanejamentoPage implements OnInit, OnDestroy {
   }
 
   deletarPlanejamento(id: string) {
-    if (confirm('Tem certeza que deseja excluir este planejamento?')) {
-      this.subscription.add(
-        this.planejamentoService.deletarPlanejamento(id).subscribe({
-          next: () => {
-            this.presentAlert('Sucesso', 'Planejamento excluído com sucesso!');
-            this.carregarPlanejamentos();
-          },
-          error: (erro) => {
-            console.error('Erro ao deletar planejamento:', erro);
-            this.presentAlert('Erro', 'Erro ao deletar planejamento. Tente novamente.');
-          }
-        })
-      );
+    if (!id || typeof id !== 'string') {
+      console.error('ID do planejamento inválido para exclusão.');
+      this.presentAlert('Erro', 'Não foi possível remover o planejamento: ID inválido.');
+      return;
     }
+
+    this.planejamentoService.deletarPlanejamento(id).subscribe({
+      next: () => {
+        console.log('Planejamento excluído com sucesso');
+        this.carregarPlanejamentos();
+        this.presentAlert('Sucesso', 'Planejamento removido com sucesso!');
+      },
+      error: (error) => {
+        console.error('Erro ao excluir planejamento:', error);
+        this.presentAlert('Erro', 'Erro ao remover planejamento. Tente novamente.');
+      }
+    });
   }
 
   avancarSemana() {
@@ -253,29 +256,29 @@ export class PlanejamentoPage implements OnInit, OnDestroy {
     this.carregarPlanejamentos();
   }
 
-  async confirmarExclusao(planejamentoId: number | string | undefined) {
-    if (planejamentoId === undefined || planejamentoId === null) {
-      console.error('ID do planejamento não fornecido para exclusão.');
-      this.presentAlert('Erro', 'Não foi possível excluir o planejamento: ID não encontrado.');
+  async confirmarExclusao(planejamentoId: string | undefined) {
+    if (!planejamentoId) {
+      console.error('ID do planejamento não fornecido para remoção.');
+      this.presentAlert('Erro', 'Não foi possível remover o planejamento: ID não encontrado.');
       return;
     }
 
     const alert = await this.alertController.create({
-      header: 'Confirmar Exclusão',
-      message: 'Tem certeza que deseja excluir este planejamento?',
+      header: 'Confirmar exclusão',
+      message: 'Tem certeza que deseja remover este planejamento?',
       buttons: [
         {
           text: 'Cancelar',
           role: 'cancel',
-          cssClass: 'secondary',
+          cssClass: 'secondary'
         },
         {
-          text: 'Excluir',
+          text: 'Remover',
           handler: () => {
-            this.deletarPlanejamento(String(planejamentoId));
-          },
-        },
-      ],
+            this.deletarPlanejamento(planejamentoId);
+          }
+        }
+      ]
     });
 
     await alert.present();
