@@ -2,18 +2,18 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { Tab1PageRoutingModule } from './tab1-routing.module';
-import { Tab1Page } from './tab1.page';
+import { PlanejamentoPageRoutingModule } from './planejamento-routing.module';
+import { PlanejamentoPage } from './planejamento.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    Tab1PageRoutingModule,
+    PlanejamentoPageRoutingModule,
     ReactiveFormsModule,
-    Tab1Page
+    PlanejamentoPage
   ],
   declarations: []
 })
-export class Tab1PageModule {}
+export class PlanejamentoPageModule {} 

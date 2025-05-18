@@ -11,7 +11,8 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    CategoriasPage
   ]
 })
 export class CategoriasPageModule {} 

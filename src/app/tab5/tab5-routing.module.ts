@@ -5,7 +5,11 @@ import { Tab5Page } from './tab5.page';
 const routes: Routes = [
   {
     path: '',
-    component: Tab5Page,
+    component: Tab5Page
+  },
+  {
+    path: 'planejamento',
+    loadChildren: () => import('./planejamento/planejamento.module').then(m => m.PlanejamentoPageModule)
   }
 ];
 

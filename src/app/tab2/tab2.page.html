@@ -57,6 +57,9 @@
             </ion-item>
           </ion-card-content>
 
+          <ion-button fill="clear" (click)="editarReceita(receita)">
+            <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+          </ion-button>
           <ion-button fill="clear" color="danger" (click)="deletarReceita(receita.id)">
             <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
           </ion-button>
@@ -65,3 +68,105 @@
     </ion-row>
   </ion-grid>
 </ion-content>
+
+<!-- Modal de Edição -->
+<ion-modal [isOpen]="receitaEditando !== null" (didDismiss)="receitaEditando = null">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Editar Receita</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="receitaEditando = null">Fechar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <form [formGroup]="receitaForm" (ngSubmit)="atualizarReceita()">
+        <div class="form-group">
+          <ion-label>Nome da Receita</ion-label>
+          <ion-item>
+            <ion-input formControlName="nome" placeholder="Digite o nome da receita"></ion-input>
+          </ion-item>
+          <ion-note color="danger" *ngIf="nome?.invalid && (nome?.dirty || nome?.touched)">
+            <span *ngIf="nome?.errors?.['required']">Nome é obrigatório</span>
+            <span *ngIf="nome?.errors?.['minlength']">Nome deve ter no mínimo 3 caracteres</span>
+          </ion-note>
+        </div>
+
+        <div class="form-group">
+          <ion-label>Categoria</ion-label>
+          <ion-item>
+            <ion-select formControlName="categoriaId">
+              <ion-select-option *ngFor="let categoria of categorias | keyvalue" [value]="categoria.key">
+                {{categoria.value.nome}}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-note color="danger" *ngIf="categoriaId?.invalid && (categoriaId?.dirty || categoriaId?.touched)">
+            <span *ngIf="categoriaId?.errors?.['required']">Categoria é obrigatória</span>
+          </ion-note>
+        </div>
+
+        <div class="form-group">
+          <ion-label>Ingredientes</ion-label>
+          <ion-item>
+            <ion-textarea formControlName="ingredientes" placeholder="Digite os ingredientes" rows="5"></ion-textarea>
+          </ion-item>
+          <ion-note color="danger" *ngIf="ingredientes?.invalid && (ingredientes?.dirty || ingredientes?.touched)">
+            <span *ngIf="ingredientes?.errors?.['required']">Ingredientes são obrigatórios</span>
+          </ion-note>
+        </div>
+
+        <div class="form-group">
+          <ion-label>Modo de Preparo</ion-label>
+          <ion-item>
+            <ion-textarea formControlName="modoPreparo" placeholder="Digite o modo de preparo" rows="5"></ion-textarea>
+          </ion-item>
+          <ion-note color="danger" *ngIf="modoPreparo?.invalid && (modoPreparo?.dirty || modoPreparo?.touched)">
+            <span *ngIf="modoPreparo?.errors?.['required']">Modo de preparo é obrigatório</span>
+          </ion-note>
+        </div>
+
+        <div class="form-group">
+          <ion-label>Tempo de Preparo (minutos)</ion-label>
+          <ion-item>
+            <ion-input formControlName="tempoPreparo" type="number" placeholder="Ex: 30"></ion-input>
+          </ion-item>
+          <ion-note color="danger" *ngIf="tempoPreparo?.invalid && (tempoPreparo?.dirty || tempoPreparo?.touched)">
+            <span *ngIf="tempoPreparo?.errors?.['required']">Tempo de preparo é obrigatório</span>
+            <span *ngIf="tempoPreparo?.errors?.['min']">Tempo de preparo deve ser no mínimo {{tempoPreparo?.errors?.['min']?.min}}</span>
+          </ion-note>
+        </div>
+
+        <div class="form-group">
+          <ion-label>Porções</ion-label>
+          <ion-item>
+            <ion-input formControlName="porcoes" type="number" placeholder="Ex: 4"></ion-input>
+          </ion-item>
+          <ion-note color="danger" *ngIf="porcoes?.invalid && (porcoes?.dirty || porcoes?.touched)">
+            <span *ngIf="porcoes?.errors?.['required']">Porções são obrigatórias</span>
+            <span *ngIf="porcoes?.errors?.['min']">Porções deve ser no mínimo {{porcoes?.errors?.['min']?.min}}</span>
+          </ion-note>
+        </div>
+
+        <div class="form-group">
+          <ion-label>Dificuldade</ion-label>
+          <ion-item>
+            <ion-select formControlName="dificuldade" placeholder="Selecione a dificuldade">
+              <ion-select-option value="facil">Fácil</ion-select-option>
+              <ion-select-option value="medio">Médio</ion-select-option>
+              <ion-select-option value="dificil">Difícil</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-note color="danger" *ngIf="dificuldade?.invalid && (dificuldade?.dirty || dificuldade?.touched)">
+            <span *ngIf="dificuldade?.errors?.['required']">Dificuldade é obrigatória</span>
+          </ion-note>
+        </div>
+
+        <ion-button expand="block" type="submit" [disabled]="receitaForm.invalid">
+          Atualizar Receita
+        </ion-button>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal>

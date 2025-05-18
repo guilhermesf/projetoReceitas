@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ receita?.nome || 'Detalhes da Receita' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="fecharModal()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <div *ngIf="carregando">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Carregando detalhes da receita...</p>
+  </div>
+
+  <div *ngIf="erro">
+    <ion-text color="danger">
+      <p>{{ erro }}</p>
+    </ion-text>
+  </div>
+
+  <div *ngIf="receita && !carregando && !erro">
+    <h2>{{ receita.nome }}</h2>
+
+    <div *ngIf="receita.imagem">
+      <img [src]="receita.imagem" [alt]="receita.nome" class="recipe-image">
+    </div>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Ingredientes</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>{{ receita.ingredientes }}</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Modo de Preparo</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>{{ receita.modoPreparo }}</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-item *ngIf="receita.tempoPreparo">
+      <ion-label>Tempo de Preparo:</ion-label>
+      <ion-text slot="end">{{ receita.tempoPreparo }} minutos</ion-text>
+    </ion-item>
+
+    <ion-item *ngIf="receita.porcoes">
+      <ion-label>Rendimento:</ion-label>
+      <ion-text slot="end">{{ receita.porcoes }} porções</ion-text>
+    </ion-item>
+
+     <ion-item *ngIf="receita.dificuldade">
+      <ion-label>Dificuldade:</ion-label>
+      <ion-text slot="end">{{ receita.dificuldade }}</ion-text>
+    </ion-item>
+
+  </div>
+
+</ion-content> 

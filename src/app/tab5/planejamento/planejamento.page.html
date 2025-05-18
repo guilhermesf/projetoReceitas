@@ -1,0 +1,117 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Planejamento Semanal
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Planejamento Semanal</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="planejamento-container">
+    <!-- Navegação de Semana -->
+    <div class="semana-navegacao">
+      <ion-button fill="clear" (click)="voltarSemana()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+      <ion-label>
+        {{ dataInicio | date:'dd/MM/yyyy' }} - {{ dataFim | date:'dd/MM/yyyy' }}
+      </ion-label>
+      <ion-button fill="clear" (click)="avancarSemana()">
+        <ion-icon name="arrow-forward"></ion-icon>
+      </ion-button>
+    </div>
+
+    <!-- Formulário de Cadastro/Edição -->
+    <div class="planejamento-form">
+      <h2>{{ planejamentoEditando ? 'Editar Planejamento' : 'Novo Planejamento' }}</h2>
+      <form [formGroup]="planejamentoForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <ion-label>Data</ion-label>
+          <ion-item>
+            <ion-input
+              formControlName="data"
+              placeholder="DD/MM/YYYY"
+              [maskito]="dateMask"
+            ></ion-input>
+          </ion-item>
+          <ion-note color="danger" *ngIf="data?.invalid && (data?.dirty || data?.touched)">
+            <span *ngIf="data?.errors?.['required']">Data é obrigatória</span>
+          </ion-note>
+        </div>
+
+        <div class="form-group">
+          <ion-label>Refeição</ion-label>
+          <ion-item>
+            <ion-select formControlName="refeicao" placeholder="Selecione a refeição">
+              <ion-select-option *ngFor="let tipo of tiposRefeicaoParaTemplate" [value]="tipo">{{ getNomeTipoRefeicao(tipo) }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-note color="danger" *ngIf="refeicao?.invalid && (refeicao?.dirty || refeicao?.touched)">
+            <span *ngIf="refeicao?.errors?.['required']">Refeição é obrigatória</span>
+          </ion-note>
+        </div>
+
+        <div class="form-group">
+          <ion-label>Receita</ion-label>
+          <ion-item>
+            <ion-select formControlName="receitaId" placeholder="Selecione a receita">
+              <ion-select-option *ngFor="let receita of receitas" [value]="receita.id">{{ receita.nome }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-note color="danger" *ngIf="receitaId?.invalid && (receitaId?.dirty || receitaId?.touched)">
+            <span *ngIf="receitaId?.errors?.['required']">Receita é obrigatória</span>
+          </ion-note>
+        </div>
+
+        <div class="form-group">
+          <ion-label>Observações (opcional)</ion-label>
+          <ion-item>
+            <ion-textarea formControlName="observacoes" placeholder="Alguma observação sobre esta refeição?" rows="3"></ion-textarea>
+          </ion-item>
+          <ion-note color="danger" *ngIf="observacoes?.invalid && (observacoes?.dirty || observacoes?.touched)">
+            <span *ngIf="observacoes?.errors?.['maxLength']">Máximo de {{ observacoes?.errors?.['maxLength']?.requiredLength }} caracteres</span>
+          </ion-note>
+        </div>
+
+        <ion-button expand="block" type="submit" [disabled]="planejamentoForm.invalid">
+          {{ planejamentoEditando ? 'Atualizar Planejamento' : 'Adicionar Planejamento' }}
+        </ion-button>
+
+        <ion-button expand="block" fill="outline" color="medium" *ngIf="planejamentoEditando" (click)="cancelarEdicao()">
+          Cancelar Edição
+        </ion-button>
+      </form>
+    </div>
+
+    <!-- Lista de Planejamentos -->
+    <div class="planejamentos-lista">
+      <h2>Planejamentos da Semana</h2>
+      <ion-list>
+        <ion-item *ngFor="let planejamento of planejamentos">
+          <ion-label>
+            <h3>{{ planejamento.data | date:'dd/MM/yyyy' }} - {{ planejamento.refeicao }}</h3>
+            <p>Receita: {{ getNomeReceita(planejamento.receitaId) }}</p>
+            <p *ngIf="planejamento.observacoes">Obs: {{ planejamento.observacoes }}</p>
+          </ion-label>
+          <ion-button fill="clear" (click)="editarPlanejamento(planejamento)">
+            <ion-icon name="create-outline"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" color="danger" (click)="confirmarExclusao(planejamento.id)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </div>
+  </div>
+
+  <!-- Mensagem quando não houver planejamentos -->
+  <ion-text *ngIf="planejamentos.length === 0" class="ion-text-center ion-padding">
+    <p>Nenhum planejamento para esta semana.</p>
+  </ion-text>
+</ion-content> 

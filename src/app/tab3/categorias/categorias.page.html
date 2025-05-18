@@ -13,15 +13,23 @@
           <div class="categoria-header">
             <h2 class="categoria-nome">{{ categoria.nome }}</h2>
             <div class="categoria-acoes">
-              <ion-button fill="clear" [routerLink]="['/tabs/categorias/editar', categoria.id]">
+              <ion-button fill="clear" (click)="editarCategoria(categoria)">
                 <ion-icon name="create-outline" slot="icon-only"></ion-icon>
               </ion-button>
-              <ion-button fill="clear" color="danger" (click)="deletarCategoria(categoria.id)">
+              <ion-button fill="clear" color="danger" (click)="deletarCategoria(categoria.id || '')">
                 <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
               </ion-button>
             </div>
           </div>
           <p class="categoria-descricao">{{ categoria.descricao }}</p>
+          <div class="categoria-detalhes">
+            <ion-chip *ngIf="categoria.cor" [style.--background]="categoria.cor">
+              <ion-label>Cor</ion-label>
+            </ion-chip>
+            <ion-chip *ngIf="categoria.status">
+              <ion-label>{{ categoria.status === 'ativo' ? 'Ativo' : 'Inativo' }}</ion-label>
+            </ion-chip>
+          </div>
         </ion-label>
       </ion-item>
     </ion-list>
@@ -29,7 +37,7 @@
     <!-- Formulário de Nova Categoria -->
     <div class="nova-categoria">
       <h2>Nova Categoria</h2>
-      <form [formGroup]="categoriaForm">
+      <form [formGroup]="categoriaForm" (ngSubmit)="cadastrarCategoria()">
         <ion-item>
           <ion-label position="stacked">Nome</ion-label>
           <ion-input formControlName="nome" placeholder="Digite o nome da categoria"></ion-input>
@@ -41,7 +49,7 @@
 
         <ion-item>
           <ion-label position="stacked">Descrição</ion-label>
-          <ion-textarea formControlName="descricao" placeholder="Digite a descrição da categoria"></ion-textarea>
+          <ion-textarea formControlName="descricao" placeholder="Digite a descrição da categoria" rows="3"></ion-textarea>
         </ion-item>
         <ion-note color="danger" *ngIf="descricao?.invalid && (descricao?.dirty || descricao?.touched)">
           <span *ngIf="descricao?.errors?.['required']">Descrição é obrigatória</span>
@@ -52,10 +60,95 @@
           <ion-input formControlName="icone" placeholder="Digite o nome do ícone"></ion-input>
         </ion-item>
 
+        <ion-item>
+          <ion-label position="stacked">Cor</ion-label>
+          <ion-input formControlName="cor" type="color"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Status</ion-label>
+          <ion-select formControlName="status" placeholder="Selecione o status">
+            <ion-select-option value="ativo">Ativo</ion-select-option>
+            <ion-select-option value="inativo">Inativo</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-note color="danger" *ngIf="status?.invalid && (status?.dirty || status?.touched)">
+          <span *ngIf="status?.errors?.['required']">Status é obrigatório</span>
+        </ion-note>
+
         <ion-button expand="block" [disabled]="categoriaForm.invalid" (click)="cadastrarCategoria()">
           Cadastrar Categoria
         </ion-button>
       </form>
     </div>
   </div>
-</ion-content> 
+</ion-content>
+
+<!-- Modal de Edição -->
+<ion-modal [isOpen]="categoriaEditando !== null" (didDismiss)="categoriaEditando = null">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Editar Categoria</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="categoriaEditando = null">Fechar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <form [formGroup]="categoriaForm" (ngSubmit)="atualizarCategoria()">
+        <div class="form-group">
+          <ion-label>Nome da Categoria</ion-label>
+          <ion-item>
+            <ion-input formControlName="nome" placeholder="Digite o nome da categoria"></ion-input>
+          </ion-item>
+          <ion-note color="danger" *ngIf="nome?.invalid && (nome?.dirty || nome?.touched)">
+            <span *ngIf="nome?.errors?.['required']">Nome é obrigatório</span>
+            <span *ngIf="nome?.errors?.['minlength']">Nome deve ter no mínimo 3 caracteres</span>
+          </ion-note>
+        </div>
+
+        <div class="form-group">
+          <ion-label>Descrição</ion-label>
+          <ion-item>
+            <ion-textarea formControlName="descricao" placeholder="Digite a descrição da categoria" rows="3"></ion-textarea>
+          </ion-item>
+          <ion-note color="danger" *ngIf="descricao?.invalid && (descricao?.dirty || descricao?.touched)">
+            <span *ngIf="descricao?.errors?.['required']">Descrição é obrigatória</span>
+          </ion-note>
+        </div>
+
+        <div class="form-group">
+          <ion-label>Ícone</ion-label>
+          <ion-item>
+            <ion-input formControlName="icone" placeholder="Digite o nome do ícone"></ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-group">
+          <ion-label>Cor</ion-label>
+          <ion-item>
+            <ion-input formControlName="cor" type="color"></ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-group">
+          <ion-label>Status</ion-label>
+          <ion-item>
+            <ion-select formControlName="status" placeholder="Selecione o status">
+              <ion-select-option value="ativo">Ativo</ion-select-option>
+              <ion-select-option value="inativo">Inativo</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-note color="danger" *ngIf="status?.invalid && (status?.dirty || status?.touched)">
+            <span *ngIf="status?.errors?.['required']">Status é obrigatório</span>
+          </ion-note>
+        </div>
+
+        <ion-button expand="block" type="submit" [disabled]="categoriaForm.invalid">
+          Atualizar Categoria
+        </ion-button>
+      </form>
+    </ion-content>
+  </ng-template>
+</ion-modal> 

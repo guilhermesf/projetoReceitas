@@ -3,4 +3,6 @@ export interface Categoria {
   nome: string;
   descricao?: string;
   icone?: string;
+  cor?: string;
+  status?: 'ativo' | 'inativo';
 } 

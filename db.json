@@ -1,15 +1,34 @@
 {
   "receitas": [
     {
-      "id": "09e8",
-      "nome": "teste",
-      "categoriaId": "",
-      "ingredientes": "teste",
+      "nome": "Bolo de cenoura com cobertura de chocolate",
+      "categoriaId": "7526",
+      "ingredientes": "cenoura, chocolate, trigo, fermento, ovos, azeite",
       "modoPreparo": "teste",
-      "tempoPreparo": 5,
-      "porcoes": 4,
-      "dificuldade": "medio"
+      "tempoPreparo": 20,
+      "porcoes": 8,
+      "dificuldade": "medio",
+      "id": "09e8"
     }
   ],
-  "categorias": []
+  "categorias": [
+    {
+      "nome": "bolo",
+      "descricao": "teste",
+      "icone": "",
+      "cor": "#982525",
+      "status": "ativo",
+      "id": "7526"
+    },
+    {
+      "nome": "Arroz",
+      "descricao": "arroz cozido",
+      "icone": "",
+      "cor": "#2d4295",
+      "status": "ativo",
+      "id": "945d"
+    }
+  ],
+  "planejamentos": [],
+  "favoritos": []
 }

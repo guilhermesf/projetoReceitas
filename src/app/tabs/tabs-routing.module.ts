@@ -28,16 +28,12 @@ const routes: Routes = [
         loadChildren: () => import('../tab5/tab5.module').then(m => m.Tab5PageModule)
       },
       {
-        path: 'cadastro-novo',
-        loadChildren: () => import('../tab2/cadastro-novo/cadastro-novo.module').then(m => m.CadastroNovoPageModule)
-      },
-      {
         path: 'categorias',
         loadChildren: () => import('../tab3/categorias/categorias.module').then(m => m.CategoriasPageModule)
       },
       {
-        path: 'categorias/editar/:id',
-        loadChildren: () => import('../tab3/categorias/editar-categoria/editar-categoria.module').then(m => m.EditarCategoriaPageModule)
+        path: 'cadastro-novo',
+        loadChildren: () => import('../tab2/cadastro-novo/cadastro-novo.module').then(m => m.CadastroNovoPageModule)
       },
       {
         path: '',
@@ -55,5 +51,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
 export class TabsPageRoutingModule {}

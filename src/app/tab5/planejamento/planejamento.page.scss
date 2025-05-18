@@ -1,41 +1,71 @@
-// Estilos para a página de categorias 
-.categorias-container {
-  padding: 16px;
+ion-content {
+  --padding-top: 16px;
+  --padding-bottom: 16px;
 }
 
-.categoria-card {
-  margin-bottom: 16px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+ion-toolbar {
   --background: var(--ion-color-light);
 }
 
-.categoria-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px;
+ion-item-divider {
+  --background: var(--ion-color-light);
+  --color: var(--ion-color-dark);
+  font-weight: bold;
 }
 
-.categoria-nome {
-  font-size: 1.1em;
+ion-button[type="submit"] {
+  margin: 16px;
+}
+
+ion-textarea {
+  --padding-start: 0;
+}
+
+ion-datetime {
+  width: 100%;
+}
+
+ion-select {
+  width: 100%;
+}
+
+ion-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --inner-padding-end: 16px;
+}
+
+ion-label h2 {
   font-weight: 500;
-  margin: 0;
-  color: var(--ion-color-dark);
+  margin-bottom: 4px;
 }
 
-.categoria-descricao {
+ion-label p {
   color: var(--ion-color-medium);
-  margin: 8px 0;
   font-size: 0.9em;
 }
 
-.categoria-acoes {
-  display: flex;
-  gap: 8px;
+.planejamento-container {
+  padding: 16px;
 }
 
-.nova-categoria {
+.semana-navegacao {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  background: var(--ion-color-light);
+  padding: 8px 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.semana-navegacao ion-label {
+  font-weight: bold;
+  color: var(--ion-color-dark);
+}
+
+.planejamento-form {
   margin-top: 24px;
   padding: 16px;
   background: var(--ion-color-light);
@@ -43,47 +73,78 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.nova-categoria h2 {
+.planejamento-form h2 {
   margin: 0 0 16px 0;
   color: var(--ion-color-dark);
   font-size: 1.2em;
   font-weight: 500;
 }
 
-.nova-categoria ion-item {
+.planejamento-form ion-item {
   --background: transparent;
   margin-bottom: 8px;
   --padding-start: 0;
   --inner-padding-end: 0;
 }
 
-.nova-categoria ion-button {
+.planejamento-form ion-button[type="submit"] {
   margin-top: 16px;
 }
 
-ion-content {
-  --padding-start: 16px;
-  --padding-end: 16px;
+.planejamentos-lista {
+  margin-top: 24px;
 }
 
-ion-item-divider {
+.planejamentos-lista h2 {
+  margin: 0 0 16px 0;
+  color: var(--ion-color-dark);
+  font-size: 1.2em;
+  font-weight: 500;
+}
+
+.planejamentos-lista ion-item {
+  margin-bottom: 8px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   --background: var(--ion-color-light);
-  --color: var(--ion-color-dark);
-  font-weight: bold;
-  margin-top: 16px;
 }
 
-.error-message {
-  color: var(--ion-color-danger);
+.planejamentos-lista ion-label h3 {
+  margin-top: 0;
+  margin-bottom: 4px;
+  font-size: 1em;
+  font-weight: 500;
+  color: var(--ion-color-dark);
+}
+
+.planejamentos-lista ion-label p {
+  margin-top: 0;
+  margin-bottom: 4px;
+  color: var(--ion-color-medium);
+  font-size: 0.9em;
+}
+
+.planejamentos-lista ion-button[fill="clear"] {
+  --padding-start: 8px;
+  --padding-end: 8px;
+  height: 36px;
+  margin: 0;
+}
+
+.planejamentos-lista ion-button[fill="clear"] ion-icon {
+  font-size: 20px;
+}
+
+// Estilos para mensagens de erro
+ion-note {
+  display: block;
+  margin: 4px 0;
   font-size: 12px;
-  margin: 4px 16px;
+  color: var(--ion-color-danger);
 }
 
-ion-button[type="submit"] {
-  margin: 16px 0;
-}
-
-// Estilos do Modal
+// Estilos do Modal (Manter se ainda houver um modal no planejamento)
+/*
 ion-modal {
   --height: auto;
   --max-height: 90%;
@@ -144,7 +205,8 @@ ion-modal ion-item {
 }
 
 ion-modal ion-input,
-ion-modal ion-textarea {
+ion-modal ion-textarea,
+ion-modal ion-select {
   --padding-start: 8px;
   --padding-end: 8px;
   --padding-top: 8px;
@@ -165,22 +227,4 @@ ion-modal ion-button[type="submit"] {
   --border-radius: 8px;
   --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
-// Estilos para mensagens de erro
-ion-note {
-  display: block;
-  margin: 4px 0;
-  font-size: 12px;
-}
-
-// Estilos para botões de ação
-ion-button[fill="clear"] {
-  --padding-start: 8px;
-  --padding-end: 8px;
-  height: 36px;
-  margin: 0;
-}
-
-ion-button[fill="clear"] ion-icon {
-  font-size: 20px;
-} 
+*/ 
