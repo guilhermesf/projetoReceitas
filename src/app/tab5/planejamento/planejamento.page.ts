@@ -59,6 +59,7 @@ export class PlanejamentoPage implements OnInit, OnDestroy {
           return null;
         }
       ]],
+      horario: ['', [Validators.required]],
       refeicao: ['', [Validators.required]],
       receitaId: ['', [Validators.required]],
       observacoes: ['', [Validators.maxLength(200)]]
@@ -68,6 +69,7 @@ export class PlanejamentoPage implements OnInit, OnDestroy {
   }
 
   get data() { return this.planejamentoForm.get('data'); }
+  get horario() { return this.planejamentoForm.get('horario'); }
   get refeicao() { return this.planejamentoForm.get('refeicao'); }
   get receitaId() { return this.planejamentoForm.get('receitaId'); }
   get observacoes() { return this.planejamentoForm.get('observacoes'); }
@@ -151,6 +153,7 @@ export class PlanejamentoPage implements OnInit, OnDestroy {
     const dataFormatada = planejamento.data ? this.formatarDataParaExibicao(planejamento.data) : '';
     this.planejamentoForm.patchValue({
       data: dataFormatada,
+      horario: planejamento.horario,
       refeicao: planejamento.refeicao,
       receitaId: planejamento.receitaId,
       observacoes: planejamento.observacoes

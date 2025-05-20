@@ -30,7 +30,17 @@
       "id": "945d"
     }
   ],
-  "planejamentos": [],
+  "planejamentos": [
+    {
+      "data": "2025-05-23",
+      "horario": "07:00",
+      "refeicao": "cafe",
+      "receitaId": "09e8",
+      "observacoes": "",
+      "id": "08f3",
+      "usuarioId": "1"
+    }
+  ],
   "favoritos": [
     {
       "id": "c79e",

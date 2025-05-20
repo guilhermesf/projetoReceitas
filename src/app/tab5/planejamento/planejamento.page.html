@@ -49,6 +49,20 @@
         </div>
 
         <div class="form-group">
+          <ion-label>Horário</ion-label>
+          <ion-item>
+            <ion-input
+              formControlName="horario"
+              type="time"
+              placeholder="HH:mm"
+            ></ion-input>
+          </ion-item>
+          <ion-note color="danger" *ngIf="horario?.invalid && (horario?.dirty || horario?.touched)">
+            <span *ngIf="horario?.errors?.['required']">Horário é obrigatório</span>
+          </ion-note>
+        </div>
+
+        <div class="form-group">
           <ion-label>Refeição</ion-label>
           <ion-item>
             <ion-select formControlName="refeicao" placeholder="Selecione a refeição">
@@ -98,7 +112,7 @@
       <ion-list>
         <ion-item *ngFor="let planejamento of planejamentos">
           <ion-label>
-            <h3>{{ planejamento.data | date:'dd/MM/yyyy' }} - {{ planejamento.refeicao }}</h3>
+            <h3>{{ planejamento.data | date:'dd/MM/yyyy' }} - {{ planejamento.horario }} - {{ getNomeTipoRefeicao(planejamento.refeicao) }}</h3>
             <p>Receita: {{ getNomeReceita(planejamento.receitaId) }}</p>
             <p *ngIf="planejamento.observacoes">Obs: {{ planejamento.observacoes }}</p>
           </ion-label>

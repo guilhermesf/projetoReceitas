@@ -34,6 +34,26 @@
         </ion-select>
       </ion-item>
 
+      <ion-item>
+        <ion-label position="stacked">Data de Validade</ion-label>
+        <ion-input 
+          [(ngModel)]="novoItem.dataValidade" 
+          placeholder="dd/MM/yyyy"
+          type="text"
+          maxlength="10"
+          (ionInput)="formatarData($event)">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Prioridade</ion-label>
+        <ion-select [(ngModel)]="novoItem.prioridade">
+          <ion-select-option value="baixa">Baixa</ion-select-option>
+          <ion-select-option value="media">Média</ion-select-option>
+          <ion-select-option value="alta">Alta</ion-select-option>
+        </ion-select>
+      </ion-item>
+
       <ion-button expand="block" (click)="adicionarItem()">
         Adicionar Item
       </ion-button>
@@ -52,6 +72,7 @@
       <ion-label>
         <h2>{{item.nome}}</h2>
         <p>{{item.quantidade}} {{item.unidade}}</p>
+        <p>Prioridade: {{item.prioridade | titlecase}}</p>
       </ion-label>
 
       <ion-button slot="end" fill="clear" (click)="editarItem(item)">
@@ -114,6 +135,30 @@
           <ion-note color="danger" *ngIf="itemForm.get('unidade')?.invalid && (itemForm.get('unidade')?.dirty || itemForm.get('unidade')?.touched)">
             <span *ngIf="itemForm.get('unidade')?.errors?.['required']">Unidade é obrigatória</span>
           </ion-note>
+        </div>
+
+        <div class="form-group">
+          <ion-label>Data de Validade</ion-label>
+          <ion-item>
+            <ion-input 
+              formControlName="dataValidade" 
+              placeholder="dd/MM/yyyy"
+              type="text"
+              maxlength="10"
+              (ionInput)="formatarData($event)">
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-group">
+          <ion-label>Prioridade</ion-label>
+          <ion-item>
+            <ion-select formControlName="prioridade">
+              <ion-select-option value="baixa">Baixa</ion-select-option>
+              <ion-select-option value="media">Média</ion-select-option>
+              <ion-select-option value="alta">Alta</ion-select-option>
+            </ion-select>
+          </ion-item>
         </div>
 
         <ion-button expand="block" type="submit" [disabled]="itemForm.invalid">

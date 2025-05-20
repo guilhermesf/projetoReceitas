@@ -5,6 +5,10 @@ export interface Planejamento {
   receitaId: string;
   observacoes?: string;
   usuarioId: string;
+  horario: string;
+  quantidadePessoas: number;
+  dificuldade: 'facil' | 'medio' | 'dificil';
+  status: 'pendente' | 'concluido' | 'cancelado';
 }
 
 export type TipoRefeicao = 'cafe' | 'almoco' | 'jantar' | 'lanche';

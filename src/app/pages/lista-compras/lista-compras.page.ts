@@ -18,7 +18,9 @@ export class ListaComprasPage implements OnInit {
     nome: '',
     quantidade: 1,
     unidade: 'un',
-    comprado: false
+    comprado: false,
+    dataValidade: '',
+    prioridade: 'media'
   };
   itemEditando: ItemListaCompras | null = null;
   itemForm: FormGroup;
@@ -34,7 +36,9 @@ export class ListaComprasPage implements OnInit {
       nome: ['', [Validators.required, Validators.minLength(2)]],
       quantidade: [1, [Validators.required, Validators.min(1)]],
       unidade: ['un', Validators.required],
-      comprado: [false]
+      comprado: [false],
+      dataValidade: [''],
+      prioridade: ['media', Validators.required]
     });
   }
 
@@ -59,6 +63,11 @@ export class ListaComprasPage implements OnInit {
       return;
     }
 
+    if (!this.validarData(this.novoItem.dataValidade)) {
+      this.mostrarMensagem('Por favor, insira uma data válida');
+      return;
+    }
+
     this.listaComprasService.adicionarItem(this.novoItem).subscribe(
       () => {
         this.carregarItens();
@@ -66,7 +75,9 @@ export class ListaComprasPage implements OnInit {
           nome: '',
           quantidade: 1,
           unidade: 'un',
-          comprado: false
+          comprado: false,
+          dataValidade: '',
+          prioridade: 'media'
         };
         this.mostrarMensagem('Item adicionado com sucesso!');
       },
@@ -82,12 +93,21 @@ export class ListaComprasPage implements OnInit {
       nome: item.nome,
       quantidade: item.quantidade,
       unidade: item.unidade,
-      comprado: item.comprado
+      comprado: item.comprado,
+      dataValidade: item.dataValidade || '',
+      prioridade: item.prioridade || 'media'
     });
   }
 
   atualizarItem() {
     if (this.itemForm.valid && this.itemEditando?.id) {
+      const dataValidade = this.itemForm.get('dataValidade')?.value;
+      
+      if (!this.validarData(dataValidade)) {
+        this.mostrarMensagem('Por favor, insira uma data válida');
+        return;
+      }
+
       const itemAtualizado = {
         ...this.itemForm.value,
         id: this.itemEditando.id
@@ -147,6 +167,66 @@ export class ListaComprasPage implements OnInit {
         }
       );
     }
+  }
+
+  formatarData(event: any) {
+    let value = event.target.value.replace(/\D/g, '');
+    if (value.length > 0) {
+      if (value.length <= 2) {
+        value = value;
+      } else if (value.length <= 4) {
+        value = value.substring(0, 2) + '/' + value.substring(2);
+      } else {
+        value = value.substring(0, 2) + '/' + value.substring(2, 4) + '/' + value.substring(4, 8);
+      }
+    }
+    event.target.value = value;
+  }
+
+  formatarDataInput(event: any, tipo: 'novo' | 'edit') {
+    let valor = event.detail.value.replace(/\D/g, '');
+    
+    if (valor.length > 0) {
+      if (valor.length <= 2) {
+        valor = valor;
+      } else if (valor.length <= 4) {
+        valor = valor.substring(0, 2) + '/' + valor.substring(2);
+      } else {
+        valor = valor.substring(0, 2) + '/' + valor.substring(2, 4) + '/' + valor.substring(4, 8);
+      }
+    }
+
+    if (tipo === 'novo') {
+      this.novoItem.dataValidade = valor;
+    } else {
+      this.itemForm.patchValue({
+        dataValidade: valor
+      });
+    }
+  }
+
+  private validarData(dataString: string): boolean {
+    const [dia, mes, ano] = dataString.split('/').map(Number);
+    
+    // Verifica se os valores são números válidos
+    if (isNaN(dia) || isNaN(mes) || isNaN(ano)) return false;
+    
+    // Verifica limites básicos
+    if (dia < 1 || dia > 31) return false;
+    if (mes < 1 || mes > 12) return false;
+    if (ano < 1900 || ano > 2100) return false;
+    
+    // Verifica meses com 30 dias
+    if ([4, 6, 9, 11].includes(mes) && dia > 30) return false;
+    
+    // Verifica fevereiro
+    if (mes === 2) {
+      const isBissexto = (ano % 4 === 0 && ano % 100 !== 0) || (ano % 400 === 0);
+      if (isBissexto && dia > 29) return false;
+      if (!isBissexto && dia > 28) return false;
+    }
+    
+    return true;
   }
 
   private async mostrarMensagem(mensagem: string) {
