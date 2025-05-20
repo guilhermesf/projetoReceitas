@@ -33,10 +33,11 @@
   "planejamentos": [],
   "favoritos": [
     {
-      "id": "c4a8",
+      "id": "c79e",
       "usuarioId": 1,
       "receitaId": "09e8",
-      "dataAdicao": "2025-05-18T20:19:43.875Z"
+      "dataAdicao": "2025-05-20T19:10:20.862Z"
     }
-  ]
+  ],
+  "lista-compras": []
 }

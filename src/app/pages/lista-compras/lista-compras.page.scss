@@ -1,0 +1,79 @@
+.item-comprado {
+  opacity: 0.6;
+  text-decoration: line-through;
+}
+
+ion-card {
+  margin: 16px;
+}
+
+ion-list {
+  margin-top: 16px;
+}
+
+ion-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  margin-bottom: 8px;
+}
+
+ion-button[color="danger"] {
+  --padding-start: 8px;
+  --padding-end: 8px;
+}
+
+// Estilos do Modal de Edição
+ion-modal {
+  --height: 450px;
+  --max-height: 90%;
+  --width: 90%;
+  --max-width: 500px;
+  --border-radius: 16px;
+  --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+ion-modal ion-header {
+  --background: var(--ion-color-light);
+}
+
+ion-modal ion-toolbar {
+  --background: var(--ion-color-light);
+  --color: var(--ion-color-dark);
+  --border-color: var(--ion-color-light-shade);
+}
+
+ion-modal ion-title {
+  font-size: 1.2em;
+  font-weight: 500;
+}
+
+ion-modal ion-content {
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+}
+
+ion-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-group ion-label {
+  color: var(--ion-color-dark);
+  font-weight: 500;
+  font-size: 0.9em;
+  margin-bottom: 4px;
+}
+
+ion-note {
+  font-size: 0.8em;
+  margin-top: 4px;
+} 
